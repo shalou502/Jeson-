@@ -2,9 +2,21 @@
 setlocal
 cd /d "%~dp0"
 
-set HOST=0.0.0.0
-set PORT=8000
-set DASHBOARD_URL=http://192.168.30.212:8000/dashboard
+echo [INFO] Script directory: %~dp0
+
+if not exist "server\app.py" (
+  echo [ERROR] server\app.py not found.
+  echo [ERROR] Please place this .cmd in the project root folder.
+  pause
+  exit /b 1
+)
+
+if not exist "requirements.txt" (
+  echo [ERROR] requirements.txt not found.
+  echo [ERROR] Please place this .cmd in the project root folder.
+  pause
+  exit /b 1
+)
 
 where python >nul 2>nul
 if errorlevel 1 (
@@ -13,42 +25,25 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo [INFO] Checking Python dependencies...
-python -c "import fastapi,uvicorn,requests" >nul 2>nul
+echo [INFO] Python:
+python --version
+
+echo [INFO] Installing/checking dependencies...
+python -m pip install -r requirements.txt
 if errorlevel 1 (
-  echo [INFO] Installing dependencies from requirements.txt ...
-  python -m pip install -r requirements.txt
-  if errorlevel 1 (
-    echo [ERROR] Dependency install failed.
-    pause
-    exit /b 1
-  )
+  echo [ERROR] pip install failed.
+  echo [TIP] Check network/proxy and run manually: python -m pip install -r requirements.txt
+  pause
+  exit /b 1
 )
 
-echo [INFO] Starting Jeson management service in a new window...
-start "Jeson管理端服务" cmd /k "cd /d "%~dp0" && python -m uvicorn server.app:app --host %HOST% --port %PORT%"
+echo [INFO] Opening dashboard URL...
+start "" "http://192.168.30.212:8000/dashboard"
 
-echo [INFO] Waiting service health check...
-set OK=
-for /l %%i in (1,1,30) do (
-  powershell -NoProfile -ExecutionPolicy Bypass -Command "try { (Invoke-WebRequest -Uri 'http://127.0.0.1:%PORT%/health' -UseBasicParsing -TimeoutSec 2).StatusCode } catch { '' }" | findstr /r "^200$" >nul
-  if not errorlevel 1 (
-    set OK=1
-    goto :READY
-  )
-  timeout /t 1 >nul
-)
-
-:READY
-if defined OK (
-  echo [INFO] Service is up. Opening dashboard...
-  start "" "%DASHBOARD_URL%"
-) else (
-  echo [WARN] Service did not pass health check in time.
-  echo [WARN] Please check firewall/port and the service window logs.
-  echo [INFO] You can still try: %DASHBOARD_URL%
-)
+echo [INFO] Starting Jeson management service...
+echo [INFO] If startup fails, error details will be shown below.
+python -m uvicorn server.app:app --host 0.0.0.0 --port 8000
 
 echo.
-echo [INFO] Done.
+echo [INFO] Service exited. Press any key to close.
 pause
