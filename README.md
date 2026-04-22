@@ -1,22 +1,26 @@
 # Jeson联机渲染发送口（便携双击版）
 
-你可以把整套目录当“便携版”使用，**双击 `.cmd` 文件启动**，不需要手敲长命令。
+你可以把整套目录当“便携版”使用，双击 `.cmd` 文件启动。
 
 ## 双击启动入口（Windows）
 
 - `启动渲染节点托盘.cmd`：渲染主机双击启动（右下角托盘）
-- `启动管理端服务.cmd`：管理端/服务器双击启动 FastAPI 服务
+- `启动管理端服务.cmd`：管理端/服务器双击启动 FastAPI 服务，并自动打开任务看板网页
 - `打开任务看板.cmd`：双击直接打开网页看板
 
-## 你报错的原因（PowerShell）
+## 如果双击报“不是内部或外部命令”
 
-你截图里用了 `cd /d ...`，这是 **cmd.exe 语法**，不是 PowerShell 语法。
+常见原因：
+1. 没安装 Python，或 Python 没加到 PATH
+2. 你运行目录里缺少 `agent/`、`server/` 这些文件夹
 
-- 在 **PowerShell** 里应该用：
-  ```powershell
-  Set-Location "D:\Blender\addons\Jeson联机渲染"
-  ```
-- 或直接双击上面的 `.cmd` 启动文件（推荐）。
+先在命令行检查：
+
+```bat
+python --version
+```
+
+若没有版本号，请安装 Python 并勾选“Add python.exe to PATH”。
 
 ---
 
@@ -44,6 +48,9 @@ pip install -r requirements.txt
 ### 1) 管理端机器
 
 双击：`启动管理端服务.cmd`
+
+- 会启动服务
+- 会自动打开网页看板
 
 ### 2) 每台渲染机
 

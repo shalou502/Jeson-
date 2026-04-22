@@ -1,18 +1,20 @@
 @echo off
-chcp 65001 >nul
 setlocal
 cd /d "%~dp0"
 
 where python >nul 2>nul
 if errorlevel 1 (
-  echo [错误] 未找到 Python，请先安装 Python 并加入 PATH。
+  echo [ERROR] Python not found. Please install Python and add it to PATH.
   pause
   exit /b 1
 )
 
-echo [信息] 启动 Jeson 管理服务 (FastAPI)...
+echo [INFO] Opening dashboard in browser...
+start "" "http://192.168.30.212:8000/dashboard"
+
+echo [INFO] Starting Jeson management service...
 python -m uvicorn server.app:app --host 0.0.0.0 --port 8000
 if errorlevel 1 (
-  echo [错误] 启动失败，请先执行: pip install -r requirements.txt
+  echo [ERROR] Service failed. Run: pip install -r requirements.txt
   pause
 )
