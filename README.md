@@ -2,6 +2,8 @@
 
 你可以把整套目录当“便携版”使用，双击 `.cmd` 文件启动。
 
+脚本会自动尝试 `python` 或 `py -3`。若缺少 Python 会自动打开官方下载页。
+
 ## 双击启动入口（Windows）
 
 - `启动渲染节点托盘.cmd`：渲染主机双击启动（右下角托盘）
@@ -11,13 +13,14 @@
 ## 如果双击报“不是内部或外部命令”
 
 常见原因：
-1. 没安装 Python，或 Python 没加到 PATH
+1. 没安装 Python，或 Python/py 启动器没加到 PATH
 2. 你运行目录里缺少 `agent/`、`server/` 这些文件夹
 
-先在命令行检查：
+先在命令行检查（两个都试）：
 
 ```bat
 python --version
+py -3 --version
 ```
 
 若没有版本号，请安装 Python 并勾选“Add python.exe to PATH”。
